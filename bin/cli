@@ -1,0 +1,30 @@
+# require 'launchy'
+# require_relative 'users'
+# require_relative 'shortened_url'
+# require_relative 'visits'
+
+puts "What's your email address?"
+
+input = gets.chomp
+
+user = User.find_by(email: input)
+
+puts "Do you want to (v)isit a shortened URL or (c)reate one?"
+
+response = gets.chomp
+
+if response == 'v'
+  puts "Type in the shortened URL below:"
+  new_short_url = gets.chomp
+  long_url = ShortenedUrl.find_by(short_url: new_short_url)
+  Launchy.open(long_url.long_url)
+elsif response == 'c'
+  puts "What is your long URL?"
+  new_long_url = gets.chomp
+  new_short_url = ShortenedUrl.random_code
+  puts "Your shortened URL is: "
+  puts "#{new_short_url}"
+  ShortenedUrl.create(long_url: new_long_url, short_url: new_short_url, user_id: user.id)
+else
+  raise 'please enter v or c'
+end
